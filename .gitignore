@@ -1,6 +1,24 @@
-# Cloud Vitals Virtual Environments
+# (Cloud Vitals) Agent
+.agent_venv
+.agent_venvrc
+.agent_venv/
 agent_venv/
+AGENT_VENV/
+agent_env/
+agent_env.bak/
+agent_venv.bak/
+agent/tmp
+
+# (Cloud Vitals) Dashboard
+.dash_venv
+.dash_venvrc
+.dash_venv/
 dash_venv/
+DASH_VENV/
+dash_env/
+dash_env.bak/
+dash_venv.bak/
+dash/tmp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
