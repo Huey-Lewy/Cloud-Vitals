@@ -102,11 +102,13 @@ def collect_metrics():
 
 def run_stress(stress_class, duration):
     """Launch stress-ng for given class and duration."""
+
+    total_mem = psutil.virtual_memory().total    
     mapping = {
         'cpu':        ['stress-ng', '--cpu', '2', '--cpu-method', 'matrixprod'],
-        'io':         ['stress-ng', '--io', '4', '--io-method', 'seek'],
+        'io':         ['stress-ng', '--iomix', '4'],
         'filesystem': ['stress-ng', '--hdd', '2', '--hdd-bytes', '1G'],
-        'swap':       ['stress-ng', '--vm', '1', '--vm-bytes', '512M', '--page-in'],
+        'swap':       ['stress-ng', '--vm', '1', '--vm-bytes', f'{total_mem}b', '--page-in'],
         'net':        ['stress-ng', '--sockpair', '2', '--sockpair-ops', '100000']
     }
 
