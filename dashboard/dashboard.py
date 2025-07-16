@@ -1,3 +1,11 @@
+"""
+Cloud Vitals Dashboard
+
+This script runs on your local machine (or a separate VM).
+Periodically checks the Cloud Vital Agents' endpoints using requests,
+aggregates the returned data, and renders the resulting data visually. 
+"""
+
 # dashboard.py
 import tkinter as tk
 import matplotlib.pyplot as plt
@@ -40,10 +48,4 @@ add_graph("Network Traffic: ",networkFrame,10)
 
 window.mainloop()
 
-"""
-Cloud Vitals Dashboard
 
-This script runs on your local machine (or a separate VM).
-Periodically checks the Cloud Vital Agents' endpoints using requests,
-aggregates the returned data, and renders the resulting data visually. 
-"""
