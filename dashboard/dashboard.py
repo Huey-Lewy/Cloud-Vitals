@@ -21,33 +21,22 @@ def add_graph(title, parent, axisY):
 header = tk.Label(window,text="Welcome to the Cloud Vitals Dashboard!", font=("Arial",16))
 header.pack(pady=20)
 
-#create Frames for graphs to go in later
-cpuFrame = tk.LabelFrame(window, text="CPU Usage", padx=5, pady=5)
+#create Frames for graphs
+cpuFrame = tk.LabelFrame(window, padx=5, pady=5)
 cpuFrame.pack(side="left",padx=10,pady=10)
 add_graph("Cpu Usage: ",cpuFrame,10)
-#b = tk.Button(cpuFrame,text="cpu")
-#b.pack(padx=10,pady=10)
 
-memFrame = tk.LabelFrame(window, text="Memory Usage", padx=5, pady=5)
+memFrame = tk.LabelFrame(window, padx=5, pady=5)
 memFrame.pack(side="left",padx=10,pady=10)
-add_graph("Cpu Usage: ",memFrame,10)
+add_graph("Memory Usage: ",memFrame,10)
 
-#c = tk.Button(memFrame,text="mem")
-#c.pack(padx=10,pady=10)
-
-diskFrame = tk.LabelFrame(window, text="Disk Usage", padx=5, pady=5)
+diskFrame = tk.LabelFrame(window, padx=5, pady=5)
 diskFrame.pack(side="left",padx=10,pady=10)
-add_graph("Cpu Usage: ",diskFrame,10)
+add_graph("Disk Usage: ",diskFrame,10)
 
-#d = tk.Button(diskFrame,text="disk")
-#d.pack(padx=10,pady=10)
-
-networkFrame = tk.LabelFrame(window, text="Network Traffic Usage", padx=5, pady=5)
+networkFrame = tk.LabelFrame(window,padx=5, pady=5)
 networkFrame.pack(side="left", padx=10,pady=10)
-add_graph("Network Traffic Usage: ",networkFrame,10)
-
-#e = tk.Button(networkFrame,text="network")
-#e.pack(padx=10,pady=10)
+add_graph("Network Traffic: ",networkFrame,10)
 
 window.mainloop()
 
