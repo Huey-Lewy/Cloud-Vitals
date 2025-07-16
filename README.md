@@ -13,7 +13,7 @@ It uses a Python agent on each VM and a central dashboard.
 │   ├── agent.py
 │   ├── requirements.txt
 │   └── cloud-vitals-agent.service
-└── dashboard/
+├── dashboard/
 │   ├── dash_venv/
 │   ├── dashboard.py
 │   └── requirements.txt
