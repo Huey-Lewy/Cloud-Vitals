@@ -14,7 +14,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # create window, title and size of window
 window = tk.Tk()
 window.title("Cloud Vitals Dashboard")
-window.geometry("1350x400")
+window.geometry("1500x400")
 
 #figure and axis for graphs
 def add_graph(title, parent, axisY):
@@ -45,6 +45,9 @@ add_graph("Disk Usage: ",diskFrame,10)
 networkFrame = tk.LabelFrame(window,padx=5, pady=5)
 networkFrame.pack(side="left", padx=10,pady=10)
 add_graph("Network Traffic: ",networkFrame,10)
+
+#quit button closes dashboard
+quitButton = tk.Button(window,text="quit", command=exit).pack(side="bottom",padx=10, pady=10)
 
 window.mainloop()
 
