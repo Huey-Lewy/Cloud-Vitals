@@ -5,7 +5,6 @@
 SERVICE=cloud_vitals_agent
 
 if ! systemctl is-active --quiet "$SERVICE"; then
-  echo "$(date '+%Y-%m-%d %H:%M:%S') $SERVICE is down, restarting" \
-    >> /var/log/cloud-vitals-agent-check.log
+  echo "$(date '+%Y-%m-%d %H:%M:%S') $SERVICE is down, restarting" >> /var/log/cloud-vitals-agent-check.log
   systemctl restart "$SERVICE"
 fi
