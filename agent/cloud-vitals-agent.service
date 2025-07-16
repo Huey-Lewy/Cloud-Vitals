@@ -1,0 +1,13 @@
+[Unit]
+Description=Cloud Vitals Agent
+After=network.target
+
+[Service]
+User=agentuser
+WorkingDirectory=/opt/cloud-vitals/agent
+ExecStart=/opt/cloud-vitals/agent/venv/bin/python agent.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
