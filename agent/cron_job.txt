@@ -1,0 +1,1 @@
+*/5 * * * * /opt/cloud-vitals/agent/cloud_vitals_agent_check.sh >> /var/log/cloud-vitals-agent-check.log 2>&1
