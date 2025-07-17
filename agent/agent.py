@@ -101,40 +101,32 @@ def collect_metrics():
         time.sleep(COLLECT_INTERVAL)
 
 def run_stress(stress_class, duration):
-    """Launch stress-ng for given class and duration."""
-
-    total_mem = psutil.virtual_memory().total    
-    mapping = {
-        'cpu':        ['stress-ng', '--cpu', '2', '--cpu-method', 'matrixprod'],
-        'io':         ['stress-ng', '--iomix', '4'],
-        'filesystem': ['stress-ng', '--hdd', '2', '--hdd-bytes', '1G'],
-        'swap':       ['stress-ng', '--vm', '1', '--vm-bytes', f'{total_mem}b', '--page-in'],
-        'net':        ['stress-ng', '--sockpair', '2', '--sockpair-ops', '100000']
-    }
-
-    if stress_class not in mapping:
+    """Launch cloud_vitals_stress.sh for class and duration."""
+    script = os.path.join(os.path.dirname(__file__), 'cloud_vitals_stress.sh')
+    if not (os.path.isfile(script) and os.access(script, os.X_OK)):
         return False
-    
-    cmd = mapping[stress_class] + ['-t', f'{duration}s', '--metrics-brief']
+
+    cmd = [script, stress_class, str(duration)]
     with stress_lock:
-        # Avoid duplicates
         old = stress_procs.get(stress_class)
         if old and old.poll() is None:
+            return False  # already running
+        try:
+            proc = subprocess.Popen(cmd)
+            stress_procs[stress_class] = proc
+            return True
+        except Exception:
             return False
-        # Start new process
-        proc = subprocess.Popen(cmd)
-        stress_procs[stress_class] = proc
-    return True
 
 def abort_stress(stress_class):
     """Stop running a stress-ng job by class."""
     with stress_lock:
         proc = stress_procs.get(stress_class)
-        if not proc:
-            return False
-        proc.terminate()
-        stress_procs.pop(stress_class, None)
-    return True
+        if proc and proc.poll() is None:
+            proc.terminate()
+            stress_procs.pop(stress_class, None)
+            return True
+    return False
 
 app = Flask(__name__)
 
