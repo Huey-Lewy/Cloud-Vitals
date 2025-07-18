@@ -182,6 +182,22 @@ swap_line, swap_fig = make_graph(frames["swap"], "Swap %")
 disk_line, disk_fig = make_graph(frames["disk"], "Disk %")
 net_line, net_fig   = make_graph(frames["net"],  "Net B/s")
 
+# Add detail labels to respective frames
+for key, title in [("memory_total", "Mem Total"), ("memory_used", "Mem Used"), ("memory_free", "Mem Free")]:
+    var = tk.StringVar(value=f"{title}: 0")
+    detail_vars[key] = var
+    tk.Label(frames["mem"], textvariable=var, width=15, anchor="w").pack()
+
+for key, title in [("swap_total", "Swap Total"), ("swap_used", "Swap Used"), ("swap_free", "Swap Free")]:
+    var = tk.StringVar(value=f"{title}: 0")
+    detail_vars[key] = var
+    tk.Label(frames["swap"], textvariable=var, width=15, anchor="w").pack()
+
+for key, title in [("disk_total", "Disk Total"), ("disk_used", "Disk Used"), ("disk_free", "Disk Free")]:
+    var = tk.StringVar(value=f"{title}: 0")
+    detail_vars[key] = var
+    tk.Label(frames["disk"], textvariable=var, width=15, anchor="w").pack()
+
 # Start polling loop
 window.after(POLL_INTERVAL, fetch_and_update)
 window.mainloop()
