@@ -64,11 +64,12 @@ def fetch_and_update():
     disk_data.append(data.get("disk_percent", 0));  disk_data.pop(0)
     net_data.append(data.get("network_average_bytes_per_sec", 0));  net_data.pop(0)
 
+    #gets the usage data
     cpu_usage = data.get("cpu_percent",0)
-    mem_usage = data.get("mem_percent",0)
+    mem_usage = data.get("memory_percent",0)
     disk_usage = data.get("disk_percent",0)
 
-
+    #checks the usage data and checks it against the slider's chosen value, displays warning if greater or equal to value
     if cpu_usage >= cpu_slider.get():
         cpu_warning.config(text="Warning: cpu usage high!")
     else:
@@ -81,6 +82,7 @@ def fetch_and_update():
         disk_warning.config(text="Warning: disk usage high!")
     else:
         disk_warning.config(text="")
+
     # Update lines
     cpu_line.set_ydata(cpu_data)
     mem_line.set_ydata(mem_data)
@@ -135,6 +137,7 @@ def threshold_slider(window,threshold_name,warning_label):
 
     return t_input, t_warning
 
+#create threshold sliders for cpu, memory, and disk usage %
 cpu_slider, cpu_warning = threshold_slider(window,"cpu usage (% used): ","Warning: cpu usage high!")
 mem_slider, mem_warning = threshold_slider(window,"mem usage (% used): ","Warning: memory usage high!")
 disk_slider, disk_warning = threshold_slider(window,"disk usage (% used): ","Warning: disk usage high!")
