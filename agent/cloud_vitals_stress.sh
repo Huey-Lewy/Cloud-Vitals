@@ -14,11 +14,6 @@ case "$CLASS" in
     ARGS=(--iomix 4) ;;
   filesystem)
     ARGS=(--hdd 2 --hdd-bytes 1G) ;;
-  swap)
-    TOTAL_MEM=$(grep MemTotal /proc/meminfo | awk '{print $2*1024}')
-    ARGS=(--vm 1 --vm-bytes "${TOTAL_MEM}b" --page-in) ;;
-  net)
-    ARGS=(--sockpair 2 --sockpair-ops 100000) ;;
   *)
     echo "Unknown class: $CLASS"
     exit 1 ;;

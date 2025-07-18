@@ -124,10 +124,10 @@ Make sure you have a rule (for example, `allow-agent-5000`) with these settings:
 #### **8\. Verify the agent**
 
    ```bash
-   systemctl status cloud_vitals_agent
-   journalctl -u cloud_vitals_agent -f
-   ls -l /tmp/metrics_fifo             # Check the named pipe
-   curl http://localhost:5000/metrics  # Should return JSON
+   systemctl status cloud_vitals_agent # Shows if the agent is running
+   journalctl -u cloud_vitals_agent -f # Tail its logs live
+   ls -l /tmp/metrics_fifo             # Verify the named pipe exists
+   curl http://localhost:5000/metrics  # Fetch JSON metrics from the agent
    ```
    
 #### **9\. Set up health‑check cron job**
@@ -141,7 +141,7 @@ Make sure you have a rule (for example, `allow-agent-5000`) with these settings:
      ```bash
      sudo crontab -e
      ```
-   * **Add the lin**:
+   * **Add the following at the end of the crontab file**:
      ```cron
      */5 * * * * /opt/cloud-vitals/agent/cloud_vitals_agent_check.sh >> /var/log/cloud-vitals-agent-check.log 2>&1
      ```
