@@ -151,6 +151,20 @@ Make sure you have a rule (for example, `allow-agent-5000`) with these settings:
      tail -f /var/log/cloud-vitals-agent-check.log
      ```
 
-## Dashboard Install (WIP)
+## Dashboard Setup
 
-* To be completed once agent is verified.
+#### **1. Make sure that you pip install the dashboard dependencies**
+```
+pip install requirements.txt
+```
+#### **2. Change IP address to the one you want to use**
+```
+AGENT_URL       = "http://IPADDRESS:5000/metrics"
+```
+#### **3. Run Agent on your VM**
+* See agent install section
+#### **4. Run dashboard.py on a separate VM or local machine to monitor vitals**
+``` 
+python dashboard.py
+```
+
