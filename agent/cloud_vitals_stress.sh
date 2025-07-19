@@ -24,3 +24,5 @@ case "$CLASS" in
     echo "Unknown class: $CLASS"
     exit 1 ;;
 esac
+
+exec "$STRESS_CMD" "${ARGS[@]}" -t "${DURATION}s" --metrics-brief

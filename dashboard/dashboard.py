@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # Agent endpoint and polling settings
-AGENT_URL       = "http://35.190.163.38:5000/metrics"
+AGENT_URL       = "http://addr:5000/metrics"
 POLL_INTERVAL   = 1000   # ms between polls
 HISTORY_LENGTH  = 60     # points to keep in each chart
 
