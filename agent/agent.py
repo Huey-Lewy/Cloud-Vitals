@@ -57,6 +57,10 @@ def collect_metrics():
         vm = psutil.virtual_memory()
         swap = psutil.swap_memory()
         du = psutil.disk_usage('/')
+
+        vm = psutil.virtual_memory()
+        swap = psutil.swap_memory()
+        du = psutil.disk_usage('/')
         io = psutil.disk_io_counters()
 
         net = psutil.net_io_counters()

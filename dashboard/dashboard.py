@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # dashboard.py
 
 """
@@ -57,7 +56,7 @@ def fetch_and_update():
         # Skip this cycle on error
         window.after(POLL_INTERVAL, fetch_and_update)
         return
-    
+
     # Shift in new samples, drop oldest
     cpu_data.append(data.get("cpu_percent", 0));    cpu_data.pop(0)
     mem_data.append(data.get("memory_percent", 0)); mem_data.pop(0)
