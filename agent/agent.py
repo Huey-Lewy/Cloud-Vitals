@@ -50,6 +50,9 @@ def collect_metrics():
     """Sample metrics, update state, and write to pipe each interval."""
     global latest_metrics
     prev_net = psutil.net_io_counters()
+    prev_io = psutil.disk_io_counters()
+    prev_read = prev_io.read_bytes
+    prev_write = prev_io.write_bytes
 
     while True:
         cpu_pct = psutil.cpu_percent(interval=None)
@@ -68,6 +71,14 @@ def collect_metrics():
         recv = net.bytes_recv - prev_net.bytes_recv
         net_bps = (sent + recv) / COLLECT_INTERVAL
         prev_net = net
+
+        io = psutil.disk_io_counters()
+        read_diff = io.read_bytes - prev_read
+        write_diff = io.write_bytes - prev_write
+        read_speed = read_diff / COLLECT_INTERVAL
+        write_speed = write_diff / COLLECT_INTERVAL
+        prev_read = io.read_bytes
+        prev_write = io.write_bytes
 
         sample = {
             'timestamp': time.time(),
@@ -88,8 +99,8 @@ def collect_metrics():
             'disk_free': du.free,
             'disk_percent': du.percent,
 
-            'disk_read': io.read_bytes,
-            'disk_write': io.write_bytes,
+            'disk_read': read_speed,
+            'disk_write': write_speed,
 
             'network_average_bytes_per_sec': net_bps
         }
