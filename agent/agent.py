@@ -4,7 +4,7 @@
 """
 Cloud Vitals Agent
 
-Collect system metrics at each interval, write seach sample as JSON
+Collect system metrics at each interval, write each sample as JSON
 '/tmp/metrics_fifo', serve the latest metrics at '/metrics', and
 accept start/stop commands at '/stress'.
 """
@@ -49,56 +49,80 @@ def init_fifo():
 def collect_metrics():
     """Sample metrics, update state, and write to pipe each interval."""
     global latest_metrics
+
+    # 1) Take initial snapshots
     prev_net = psutil.net_io_counters()
+    if prev_net is None:
+        raise RuntimeError("Network I/O counters not supported on this platform")
+    prev_io  = psutil.disk_io_counters()
+    if prev_io is None:
+        raise RuntimeError("Disk I/O counters not supported on this platform")
 
     while True:
-        cpu_pct = psutil.cpu_percent(interval=None)
-
-        vm = psutil.virtual_memory()
-        swap = psutil.swap_memory()
-        du = psutil.disk_usage('/')
-
-        net = psutil.net_io_counters()
-        sent = net.bytes_sent - prev_net.bytes_sent
-        recv = net.bytes_recv - prev_net.bytes_recv
-        net_bps = (sent + recv) / COLLECT_INTERVAL
-        prev_net = net
-
-        sample = {
-            'timestamp': time.time(),
-            'cpu_percent': cpu_pct,
-
-            'memory_total': vm.total,
-            'memory_used': vm.used,
-            'memory_free': vm.free,
-            'memory_percent': vm.percent,
-
-            'swap_total': swap.total,
-            'swap_used': swap.used,
-            'swap_free': swap.free,
-            'swap_percent': swap.percent,
-
-            'disk_total': du.total,
-            'disk_used': du.used,
-            'disk_free': du.free,
-            'disk_percent': du.percent,
-
-            'network_average_bytes_per_sec': net_bps
-        }
-
-        # Update in-memory sample
-        with metrics_lock:
-            latest_metrics = sample
-
-        # Write JSON line if a reader si on the pipe
         try:
-            fd = os.open(FIFO_PATH, os.O_WRONLY | _O_NONBLOCK)
-            with os.fdopen(fd, 'w') as fifo:
-                fifo.write(json.dumps(sample) + '\n')
-        except OSError:
-            pass # no reader on pipe
+            # 1) Gather raw stats
+            cpu_pct = psutil.cpu_percent(interval=None)
+            vm      = psutil.virtual_memory()
+            swap    = psutil.swap_memory()
+            du      = psutil.disk_usage('/')
+            net     = psutil.net_io_counters()
+            if net is None:
+                raise RuntimeError("Network I/O counters returned None")
+            io      = psutil.disk_io_counters()
+            if io is None:
+                raise RuntimeError("Disk I/O counters returned None")
 
-        time.sleep(COLLECT_INTERVAL)
+            # 2) Compute rates
+            net_bytes = (net.bytes_sent - prev_net.bytes_sent) + \
+                        (net.bytes_recv - prev_net.bytes_recv)
+            net_bps   = net_bytes / COLLECT_INTERVAL
+            prev_net  = net
+
+            read_diff  = io.read_bytes  - prev_io.read_bytes
+            write_diff = io.write_bytes - prev_io.write_bytes
+            read_bps   = read_diff  / COLLECT_INTERVAL
+            write_bps  = write_diff / COLLECT_INTERVAL
+            prev_io    = io
+
+            # 3) Build sample
+            sample = {
+                'timestamp':                time.time(),
+                'cpu_percent':              cpu_pct,
+                'memory_total':             vm.total,
+                'memory_used':              vm.used,
+                'memory_free':              vm.free,
+                'memory_percent':           vm.percent,
+                'swap_total':               swap.total,
+                'swap_used':                swap.used,
+                'swap_free':                swap.free,
+                'swap_percent':             swap.percent,
+                'disk_total':               du.total,
+                'disk_used':                du.used,
+                'disk_free':                du.free,
+                'disk_percent':             du.percent,
+                'disk_read_bytes_per_sec':  read_bps,
+                'disk_write_bytes_per_sec': write_bps,
+                'network_bytes_per_sec':    net_bps,
+            }
+
+            # 4) Update in-memory sample
+            with metrics_lock:
+                latest_metrics = sample
+
+            # 5) Write JSON line if a reader is on the pipe
+            try:
+                fd = os.open(FIFO_PATH, os.O_WRONLY | _O_NONBLOCK)
+                with os.fdopen(fd, 'w') as fifo:
+                    fifo.write(json.dumps(sample) + '\n')
+            except OSError:
+                pass  # no reader on pipe
+
+            time.sleep(COLLECT_INTERVAL)
+
+        except Exception as e:
+            # Log the error and stop the collector
+            print(f"[collect_metrics] error: {e}", file=sys.stderr)
+            break
 
 def run_stress(stress_class, duration):
     """Launch cloud_vitals_stress.sh for class and duration."""
