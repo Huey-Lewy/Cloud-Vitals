@@ -201,6 +201,24 @@ net_line, net_fig   = make_graph(frames["net"],  "Net B/s")
 diskR_line, diskR_fig = make_graph(frames["diskR"], "Disk R/s")
 diskW_line, diskW_fig = make_graph(frames["diskW"], "Disk W/s")
 
+# Add detail labels to respective frames
+for key, title in [("memory_total", "Mem Total"), ("memory_used", "Mem Used"), ("memory_free", "Mem Free")]:
+    var = tk.StringVar(value=f"{title}: 0")
+    detail_vars[key] = var
+    tk.Label(frames["mem"], textvariable=var, width=15, anchor="w").pack()
+
+for key, title in [("swap_total", "Swap Total"), ("swap_used", "Swap Used"), ("swap_free", "Swap Free")]:
+    var = tk.StringVar(value=f"{title}: 0")
+    detail_vars[key] = var
+    tk.Label(frames["swap"], textvariable=var, width=15, anchor="w").pack()
+
+# Add disk detail labels to all disk frames
+for frame_key in ["disk", "diskR", "diskW"]:
+    for key, title in [("disk_total", "Disk Total"), ("disk_used", "Disk Used"), ("disk_free", "Disk Free")]:
+        var = tk.StringVar(value=f"{title}: 0")
+        detail_vars[key] = var
+        tk.Label(frames[frame_key], textvariable=var, width=15, anchor="w").pack()
+
 # Start polling loop
 window.after(POLL_INTERVAL, fetch_and_update)
 window.mainloop()
