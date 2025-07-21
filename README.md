@@ -179,7 +179,10 @@ Make sure you have a rule (for example, `allow-agent-5000`) with these settings:
      ```
    * **Add the following at the end of the crontab file**:
      ```cron
-     */1 * * * * /opt/cloud-vitals/agent/cloud_vitals_agent_check.sh >> /var/log/cloud-vitals-agent-check.log 2>&1
+     # Cloud Vitals Cron Job
+     # - "*/5" is the interval (in minutes) when the cron job runs the agent health check
+     # - Change "*/5" to "*/1" if you want the cron job to run every 1 minute instead of 5 minutes
+     */5 * * * * /opt/cloud-vitals/agent/cloud_vitals_agent_check.sh >> /var/log/cloud-vitals-agent-check.log 2>&1
      ```
    * **Verify**:
      ```bash
