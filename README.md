@@ -179,7 +179,7 @@ Make sure you have a rule (for example, `allow-agent-5000`) with these settings:
      ```
    * **Add the following at the end of the crontab file**:
      ```cron
-     */5 * * * * /opt/cloud-vitals/agent/cloud_vitals_agent_check.sh >> /var/log/cloud-vitals-agent-check.log 2>&1
+     */1 * * * * /opt/cloud-vitals/agent/cloud_vitals_agent_check.sh >> /var/log/cloud-vitals-agent-check.log 2>&1
      ```
    * **Verify**:
      ```bash
